@@ -9,35 +9,27 @@ import SwiftUI
 
 struct ListView: View {
     
-    @State var items: [ItemModel] = [
-    ItemModel(title: "First item", isCompleted: false),
-    ItemModel(title: "Second item", isCompleted: true),
-    ItemModel(title: "Third", isCompleted: false),
-    ]
-    
+    @EnvironmentObject var listViewModel: ListViewModel
+
     var body: some View {
         List {
-            ForEach(items) { item in
+            ForEach(listViewModel.items) { item in
             ListRowView(item: item)
             }
-            .onDelete(perform: deleteItem)
-            .onMove(perform: moveItem)
+            .onDelete(perform: listViewModel.deleteItem)
+            .onMove(perform: listViewModel.moveItem)
             }
             .navigationTitle("Todo List 🖋")
             .navigationBarItems(leading: EditButton(), trailing: NavigationLink("Add", destination: AddView())
     )
     }
-    func deleteItem(indexSet: IndexSet) {
-        items.remove(atOffsets: indexSet)
-    }
-    func moveItem(from: IndexSet, to: Int) {
-        items.move(fromOffsets: from, toOffset: to)
-    }
+    
 }
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
         ListView()
     }
+        .environmentObject(ListViewModel())
 }
 }
